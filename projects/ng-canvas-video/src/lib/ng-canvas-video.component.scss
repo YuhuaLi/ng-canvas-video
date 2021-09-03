@@ -1,0 +1,272 @@
+:host {
+  display: inline-flex;
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    // pointer-events: none;
+    ul.rate-dropdown {
+      position: absolute;
+      list-style: none;
+      font-size: 1rem;
+      color: white;
+      background-color: rgb(0 0 0 / 50%);
+      width: 50px;
+      text-align: center;
+      transform: translateX(-9px);
+      li {
+        font-weight: normal;
+        padding: 8px 10px;
+        &:hover {
+          background-color: rgb(255 255 255 /30%);
+          font-weight: bold;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .video-wrapper {
+    position: relative;
+    box-shadow: 0 0 17px rgb(0 0 0 / 35%);
+    //   transform: translateY(-3px);
+    width: 100%;
+    height: 100%;
+    &.recording {
+      border: 2px solid red;
+      margin: -2px 0 0 -2px;
+    }
+    .close {
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      cursor: pointer;
+      .iconfont {
+        font-size: 1.5rem;
+        color: white;
+        z-index: 100;
+      }
+      &:active {
+        box-shadow: inset 1rem 1rem 1rem #5a5d5a;
+      }
+      &:hover {
+        background-color: #b5b6b4;
+      }
+    }
+    &:hover .close {
+      display: block;
+    }
+    .video-mask {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      text-align: center;
+      .iconfont {
+        font-size: 2rem;
+        &.icon-loading1 {
+          animation: rotate linear 1s infinite;
+        }
+      }
+      .action {
+        cursor: pointer;
+        padding: 4px;
+        &:hover {
+          border-radius: 1rem;
+          box-shadow: 0 4px 17px rgb(0 0 0 / 70%);
+        }
+      }
+    }
+
+    .video-control {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      width: 100%;
+      height: 40px;
+      padding: 0.4rem 1rem;
+      .video-progress {
+        width: 100%;
+        height: 25px;
+        padding: 10px 0px;
+        margin: 0 8px;
+        position: relative;
+        span.progress-track {
+          position: absolute;
+          width: 100%;
+          height: 5px;
+          background-color: #5a5d5a;
+          border-radius: 5px;
+        }
+        span.achor {
+          display: none;
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          border-radius: 10px;
+          background-color: white;
+          box-shadow: 0 1px 1px #5a5d5a;
+          transform: translate(-50%, -2.5px);
+          &.dragging {
+            display: block;
+          }
+        }
+        &:hover {
+          cursor: pointer;
+          span.achor {
+            display: block;
+          }
+        }
+        span.progress {
+          position: absolute;
+          height: 5px;
+          background-color: #b5b6b4;
+          border-radius: 5px;
+        }
+      }
+
+      .video-control-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        .control-group {
+          display: flex;
+          align-items: center;
+          line-height: 1.5rem;
+          .timeStr {
+            font-size: 0.75rem;
+          }
+          .action {
+            display: block;
+            // padding: 0 4px;
+            // margin: 0 4px;
+            width: 2rem;
+            height: 1.5rem;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            &:hover {
+              border-radius: 0.75rem;
+              box-shadow: 0 4px 17px rgb(0 0 0 / 70%);
+              //   background-color: rgba(0, 0, 0, 0.25);
+              font-weight: bold;
+            }
+            &.dropdown {
+              position: relative;
+              font-size: 12px;
+              white-space: nowrap;
+              line-height: 100%;
+              // width: fit-content;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+            }
+            &.volume {
+              position: relative;
+              .volume-slider-wrapper {
+                position: absolute;
+                display: none;
+                // top: -120px;
+                top: -150px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 10px 5px;
+                width: 30px;
+                background-color: rgb(0 0 0 / 30%);
+                align-items: center;
+                justify-content: center;
+                border-radius: 15px;
+                input[type="range"] {
+                  display: flex;
+                  justify-content: center;
+                  height: 130px;
+                  transform: rotate(-90deg);
+                  // height: 100px;
+                  // appearance: slider-vertical;
+                }
+              }
+              &:hover .volume-slider-wrapper {
+                display: flex;
+              }
+            }
+          }
+        }
+      }
+    }
+    &.with-progress .video-control {
+      height: 65px;
+    }
+
+    &.control-inside {
+      .video-mask {
+        bottom: 0;
+      }
+      .video-control {
+        display: none;
+        position: absolute;
+        bottom: 0;
+        background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5));
+        color: white;
+      }
+      &:hover .video-control {
+        display: flex;
+      }
+    }
+    &.control-outside {
+      .video-mask {
+        bottom: 65px;
+      }
+    }
+    
+    &.loading.control-inside {
+      .video-mask {
+        bottom: 0;
+      }
+    }
+    &.loading.control-outside {
+      .video-mask {
+        bottom: 0;
+      }
+    }
+  }
+  &.fullscreen .video-wrapper.control-outside {
+    .video-mask {
+      bottom: 0;
+    }
+    .video-control {
+      display: none;
+      position: absolute;
+      bottom: 0;
+      background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5));
+      color: white;
+    }
+    &:hover .video-control {
+      display: flex;
+    }
+  }
+  @keyframes rotate {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

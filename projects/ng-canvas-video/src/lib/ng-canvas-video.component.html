@@ -1,0 +1,176 @@
+<div
+  class="video-wrapper {{ 'control-' + options?.controls?.type }}"
+  [ngClass]="{
+    recording: status === 6,
+    loading: status < 2,
+    'with-progress': options?.controls?.actions?.progress
+  }"
+>
+  <canvas
+    #canvas
+    [ngStyle]="{
+      display: 'block',
+      width: options.width,
+      height: options.height
+    }"
+    (click)="togglePlay()"
+  >
+  </canvas>
+
+  <div class="video-mask" *ngIf="status !== 4 && status !== 6">
+    <i *ngIf="status > 0 && status < 2" class="iconfont icon-loading"></i>
+    <div *ngIf="status < 0">
+      <i class="iconfont icon-loadfailed"></i>
+      <p>{{ options.errorText || "加载出错" }}</p>
+    </div>
+    <a class="action" (click)="togglePlay()"
+      ><i
+        *ngIf="status === 5 || status === 2 || status === 3"
+        class="iconfont icon-play"
+      ></i
+    ></a>
+    <a class="action" (click)="togglePlay()">
+      <i *ngIf="status === 8" class="iconfont icon-replay-arrow"></i>
+    </a>
+  </div>
+  <div class="video-control" *ngIf="options?.controls && status > 1">
+    <div
+      *ngIf="options?.controls?.actions?.progress"
+      class="video-progress"
+      (click)="onClickProgress($event)"
+      (mousemove)="onProcessAreaMouseMove($event)"
+      (mouseout)="onProgressAchorDragEnd($event)"
+    >
+      <span class="progress-track">
+        <span class="progress" [ngStyle]="{ width: percent + '%' }"></span>
+        <span
+          class="achor"
+          [ngClass]="{ dragging: isDragProgressAnchor }"
+          (mousedown)="onProgressAchorDragStart($event)"
+          (mouseup)="onProgressAchorDragEnd($event)"
+          [ngStyle]="{ left: achorPercent + '%' }"
+        ></span>
+      </span>
+    </div>
+    <div class="video-control-group">
+      <div class="control-group">
+        <a class="action" (click)="togglePlay()">
+          <i
+            class="iconfont"
+            [ngClass]="{
+              'icon-play': status === 5 || status === 2 || status === 3,
+              'icon-zanting': status === 4 || status === 6,
+              'icon-replay-arrow': status === 8
+            }"
+          ></i>
+        </a>
+        <a
+          *ngIf="status === 4 || status === 6"
+          class="action"
+          (click)="toggleRecord()"
+        >
+          <i
+            class="iconfont"
+            [ngClass]="{
+              'icon-kaiqiluzhi': status === 4,
+              'icon-guanbiluzhi': status === 6
+            }"
+          >
+          </i>
+        </a>
+        <span class="timeStr" *ngIf="options?.controls?.actions?.progress">{{
+          formatTimeStr(currentTime) + " / " + formatTimeStr(duration)
+        }}</span>
+      </div>
+      <div class="control-group">
+        <a
+          *ngIf="options?.controls?.actions?.rate"
+          class="action dropdown"
+          data-type="rate"
+          (click)="toggleDropDown($event)"
+        >
+          {{ (playbackRate | number: "1.1") + "x" }}
+        </a>
+        <a
+          *ngIf="options?.controls?.actions?.volume"
+          class="action volume"
+          (click)="togglemuted()"
+        >
+          <div class="volume-slider-wrapper" (click)="$event.stopPropagation()">
+            <input
+              [readonly]="player?.muted"
+              type="range"
+              min="0"
+              max="100"
+              step="5"
+              [disabled]="player?.muted"
+              [value]="player?.volume"
+              (input)="onVolumeChange($event)"
+              (click)="$event.stopPropagation()"
+            />
+          </div>
+          <i
+            class="iconfont"
+            [ngClass]="{
+              'icon-silence': player?.muted || !player?.volume,
+              'icon-volume': !player?.muted && player?.volume
+            }"
+          ></i>
+        </a>
+        <a
+          *ngIf="options?.controls?.actions?.download && canDownload"
+          class="action"
+          (click)="download()"
+        >
+          <i class="iconfont icon-download"></i>
+        </a>
+        <a
+          *ngIf="options?.controls?.actions?.pictureinpicture"
+          class="action"
+          (click)="togglePictureInPicture()"
+        >
+          <i class="iconfont icon-picture-in-picture-fill"></i>
+        </a>
+        <a
+          *ngIf="options?.controls?.actions?.fullscreen"
+          class="action"
+          (click)="toggleFullscreen()"
+        >
+          <i
+            class="iconfont"
+            [ngClass]="{
+              'icon-quanping': !isFullscreen,
+              'icon-quxiaoquanping_huaban': isFullscreen
+            }"
+          >
+          </i
+        ></a>
+      </div>
+    </div>
+  </div>
+  <a
+    *ngIf="player?.options?.closeable && status > 0"
+    class="close"
+    (click)="player?.close()"
+  >
+    <i class="iconfont icon-guanbi"></i>
+  </a>
+  <div
+    class="overlay"
+    *ngIf="showRateDropdown"
+    (click)="toggleDropDown($event)"
+  >
+    <ul
+      class="rate-dropdown"
+      [ngStyle]="{ left: rateDropdownPos.left, bottom: rateDropdownPos.bottom }"
+      *ngIf="showRateDropdown"
+    >
+      <li
+        *ngFor="let rate of [0.5, 1.0, 1.5, 2.0]"
+        (click)="changePlaybackRate(rate)"
+      >
+        {{ (rate | number: "1.1") + "x" }}
+      </li>
+    </ul>
+  </div>
+</div>
