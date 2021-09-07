@@ -159,7 +159,21 @@ export class NgTimeSliderComponent
 
   init(): void {
     this.initCanvas();
+    this.initTranslateX();
     this.draw();
+  }
+
+  initTranslateX(): void {
+    const minutes = this.parseDate2Minute(this.currentTime as Date);
+    const x = (this.gap / 30) * minutes;
+    if (
+      x > this.canvas.width / 2 &&
+      x < this.gap * 48 - this.canvas.width / 2
+    ) {
+      this.translateX = this.canvas.width / 2 - x;
+    } else if (x >= this.gap * 48 - this.canvas.width / 2) {
+      this.translateX = this.canvas.width - this.gap * 48;
+    }
   }
 
   draw(): void {
