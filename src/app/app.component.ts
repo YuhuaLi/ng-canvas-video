@@ -13,11 +13,12 @@ export class AppComponent {
   src: any;
   options = {
     autoplay: false,
+    closeable: false,
     width: 480,
     height: 270,
     controls: {
-      type: 'outside'
-    }
+      type: 'outside',
+    },
   };
   options1 = {
     autoplay: true,
@@ -25,9 +26,21 @@ export class AppComponent {
     width: 480,
     height: 270,
     controls: {
-      type: 'inside'
-    }
+      type: 'inside',
+      actions: {
+        play: false,
+        record: false,
+        download: false,
+        progress: false,
+        rate: false
+      },
+    },
   };
+  validDateArr = [
+    { start: new Date('2021-09-07 00:31'), end: new Date('2021-09-07 02:41') },
+    { start: new Date('2021-09-07 04:11'), end: new Date('2021-09-07 06:49') },
+  ];
+  date = new Date('2021-09-07 00:00');
   constructor() {
     fetch('assets/mov_bbb.mp4').then((response) => {
       response.blob().then((blob) => (this.src = blob));

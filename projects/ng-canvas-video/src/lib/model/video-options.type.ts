@@ -17,6 +17,8 @@ export type VideoOptions = {
       download?: boolean;
       progress?: boolean;
       rate?: boolean;
+      play?: boolean;
+      record?: boolean;
     };
   } | null;
 };

@@ -54,7 +54,11 @@
     </div>
     <div class="video-control-group">
       <div class="control-group">
-        <a class="action" (click)="togglePlay()">
+        <a
+          *ngIf="options?.controls?.actions?.play"
+          class="action"
+          (click)="togglePlay()"
+        >
           <i
             class="iconfont"
             [ngClass]="{
@@ -65,7 +69,9 @@
           ></i>
         </a>
         <a
-          *ngIf="status === 4 || status === 6"
+          *ngIf="
+            (status === 4 || status === 6) && options?.controls?.actions?.record
+          "
           class="action"
           (click)="toggleRecord()"
         >
@@ -151,7 +157,7 @@
   <a
     *ngIf="player?.options?.closeable && status > 0"
     class="close"
-    (click)="player?.close()"
+    (click)="close()"
   >
     <i class="iconfont icon-guanbi"></i>
   </a>

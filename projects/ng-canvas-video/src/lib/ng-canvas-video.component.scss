@@ -48,8 +48,8 @@
     .close {
       display: none;
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 5px;
+      right: 5px;
       cursor: pointer;
       .iconfont {
         font-size: 1.5rem;
@@ -230,6 +230,9 @@
       }
     }
     &.control-outside {
+      .video-control {
+        background-color: white;
+      }
       .video-mask {
         bottom: 65px;
       }

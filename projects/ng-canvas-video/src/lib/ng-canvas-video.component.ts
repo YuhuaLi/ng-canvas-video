@@ -3,11 +3,13 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   HostBinding,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -29,6 +31,8 @@ export class NgCanvasVideoComponent
   @ViewChild('video') video!: HTMLVideoElement;
   @ViewChild('canvas') canvas!: ElementRef;
 
+  @Output() onclose = new EventEmitter<any>();
+
   defaultOptions: VideoOptions = {
     autoplay: true,
     width: 320,
@@ -44,6 +48,8 @@ export class NgCanvasVideoComponent
         volume: true,
         rate: true,
         download: true,
+        play: true,
+        record: true,
       },
     },
   };
@@ -334,8 +340,13 @@ export class NgCanvasVideoComponent
     });
   }
 
-  ngOnDestroy(): void {
+  close(): void {
     this.player?.close();
+    this.onclose.emit();
+  }
+
+  ngOnDestroy(): void {
+    this.close();
     document.removeEventListener('scroll', this.calcDropdownPos);
   }
 }

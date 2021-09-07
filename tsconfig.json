@@ -23,6 +23,10 @@
       "ng-canvas-video": [
         "dist/ng-canvas-video/ng-canvas-video",
         "dist/ng-canvas-video"
+      ],
+      "ng-time-slider": [
+        "dist/ng-time-slider/ng-time-slider",
+        "dist/ng-time-slider"
       ]
     }
   },
