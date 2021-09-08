@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
@@ -99,6 +100,7 @@ import { TimeRange } from './model';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgTimeSliderComponent
   implements OnInit, OnChanges, AfterViewInit, OnDestroy
@@ -113,6 +115,7 @@ export class NgTimeSliderComponent
   @Output() currentTimeChange = new EventEmitter<any>();
   timeRangeArr: { start: number; end: number; dateArr: Date[] }[] = [];
   gap = 60;
+  maxGap = 360;
   rowHeight = 20;
   translateX = 0;
   get canvas(): HTMLCanvasElement {
@@ -426,7 +429,7 @@ export class NgTimeSliderComponent
     if (currentTime) {
       this.currentTime = currentTime;
       if (
-        this.parseDate2Minute(this.currentTime) * this.gap / 30 >=
+        (this.parseDate2Minute(this.currentTime) * this.gap) / 30 >=
         this.canvas.width - this.translateX
       ) {
         this.setTranslateXByCurrentTime();
@@ -474,7 +477,7 @@ export class NgTimeSliderComponent
     const date = this.calcDate(x);
     if (event.deltaY > 0 && this.gap > 60) {
       this.gap -= 30;
-    } else if (event.deltaY < 0 && this.gap < 240) {
+    } else if (event.deltaY < 0 && this.gap < this.maxGap) {
       this.gap += 30;
     } else {
       return;
@@ -498,7 +501,7 @@ export class NgTimeSliderComponent
   }
 
   zoomIn(): void {
-    if (this.gap >= 240) {
+    if (this.gap >= this.maxGap) {
       return;
     }
     const originTime = this.currentTime || this.date;
