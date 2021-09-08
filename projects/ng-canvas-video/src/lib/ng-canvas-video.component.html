@@ -124,6 +124,13 @@
           ></i>
         </a>
         <a
+          *ngIf="options?.controls?.actions?.capture"
+          class="action"
+          (click)="capture()"
+        >
+          <i class="iconfont icon-screenshot"></i>
+        </a>
+        <a
           *ngIf="options?.controls?.actions?.download && canDownload"
           class="action"
           (click)="download()"

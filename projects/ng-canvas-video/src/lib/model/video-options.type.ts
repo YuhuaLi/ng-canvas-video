@@ -19,6 +19,7 @@ export type VideoOptions = {
       rate?: boolean;
       play?: boolean;
       record?: boolean;
+      capture?: boolean;
     };
   } | null;
 };

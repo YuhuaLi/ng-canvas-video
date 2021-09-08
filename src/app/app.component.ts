@@ -37,6 +37,7 @@ export class AppComponent {
     },
   };
   validDateArr = [
+    { start: new Date('2021-09-07 02:31'), end: new Date('2021-09-07 03:41') },
     { start: new Date('2021-09-07 10:31'), end: new Date('2021-09-07 12:41') },
     { start: new Date('2021-09-07 14:11'), end: new Date('2021-09-07 16:49') },
     { start: new Date('2021-09-07 18:21'), end: new Date('2021-09-07 21:50') },

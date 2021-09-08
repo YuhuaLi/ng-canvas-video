@@ -379,11 +379,16 @@ export class Player {
     video.onended = null;
   }
 
-  /** 是否可以播放 */
+  /**
+   * 是否可以播放
+   */
   isReady(): boolean {
     return this.video$.readyState === 4 && this.status$ > 1;
   }
 
+  /**
+   * 画中画
+   */
   requestPictureInPicture(): void {
     if (this.video$?.requestPictureInPicture) {
       // if (!document.contains(this.video$)) {
@@ -391,5 +396,17 @@ export class Player {
       // }
       this.video$.requestPictureInPicture();
     }
+  }
+
+  /**
+   * 捕获截屏
+   */
+  capture(): void {
+    const a = document.createElement('a');
+    a.href = this.canvas$.toDataURL('image/png');
+    a.download = `${this.options$.identity || ''}${
+      this.options$.identity ? '' : new Date().getTime()
+    }.png`;
+    a.click();
   }
 }

@@ -50,6 +50,7 @@ export class NgCanvasVideoComponent
         download: true,
         play: true,
         record: true,
+        capture: true,
       },
     },
   };
@@ -208,6 +209,10 @@ export class NgCanvasVideoComponent
       a.click();
       URL.revokeObjectURL(url);
     }
+  }
+
+  capture(): void {
+    this.player?.capture();
   }
 
   toggleRecord(): void {
