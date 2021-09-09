@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { TimeRange } from './model';
 
+declare const ResizeObserver: any;
 @Component({
   selector: 'lib-ng-time-slider',
   template: `<div class="time-slider-wrapper">
@@ -128,19 +129,26 @@ export class NgTimeSliderComponent
   isTicking = false;
   isDrag = false;
   alive = true;
+  resizeObserver: any;
 
-  constructor() {}
+  constructor(private ref: ElementRef) {
+    this.resizeObserver = new ResizeObserver(() => {
+      console.log('resize');
+      requestAnimationFrame(() => this.init());
+    });
+  }
   ngOnInit(): void {
     this.parseTimeRange(this.validDateArr);
     if (!this.currentTime && this.validDateArr?.length) {
       this.currentTime = this.validDateArr[0].start;
       this.currentTimeChange.emit(this.currentTime);
     }
-    window.addEventListener('resize', this.onResize);
+    // window.addEventListener('resize', this.onResize);
   }
 
   ngAfterViewInit(): void {
     this.init();
+    this.resizeObserver.observe(this.ref.nativeElement.firstElementChild);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -156,9 +164,9 @@ export class NgTimeSliderComponent
     }
   }
 
-  onResize = () => {
-    window.requestAnimationFrame(() => this.init());
-  }
+  // onResize = () => {
+  //   window.requestAnimationFrame(() => this.init());
+  // };
 
   init(): void {
     this.initCanvas();
@@ -472,6 +480,7 @@ export class NgTimeSliderComponent
   }
 
   onMouseWheel(event: any): void {
+    event.preventDefault();
     const rect = event.target.getBoundingClientRect();
     const x = event.clientX - rect.x;
     const date = this.calcDate(x);
@@ -601,6 +610,7 @@ export class NgTimeSliderComponent
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('resize', this.onResize);
+    // window.removeEventListener('resize', this.onResize);
+    this.resizeObserver.disconnect();
   }
 }
