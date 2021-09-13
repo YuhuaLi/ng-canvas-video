@@ -133,7 +133,6 @@ export class NgTimeSliderComponent
 
   constructor(private ref: ElementRef) {
     this.resizeObserver = new ResizeObserver(() => {
-      console.log('resize');
       requestAnimationFrame(() => this.init());
     });
   }

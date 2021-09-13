@@ -39,7 +39,6 @@
       class="video-progress"
       (click)="onClickProgress($event)"
       (mousemove)="onProcessAreaMouseMove($event)"
-      (mouseout)="onProgressAchorDragEnd($event)"
     >
       <span class="progress-track">
         <span class="progress" [ngStyle]="{ width: percent + '%' }"></span>
@@ -47,6 +46,7 @@
           class="achor"
           [ngClass]="{ dragging: isDragProgressAnchor }"
           (mousedown)="onProgressAchorDragStart($event)"
+          (mouseout)="onProgressAchorDragEnd($event)"
           (mouseup)="onProgressAchorDragEnd($event)"
           [ngStyle]="{ left: achorPercent + '%' }"
         ></span>

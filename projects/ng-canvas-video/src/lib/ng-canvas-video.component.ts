@@ -282,13 +282,8 @@ export class NgCanvasVideoComponent
   }
 
   onProgressAchorDragEnd(event: any): void {
-    if (
-      this.isDragProgressAnchor &&
-      (event.type === 'mouseup' ||
-        (event.type === 'mouseout' &&
-          event.target.classList?.contains('video-progress')))
-    ) {
-      this.isDragProgressAnchor = !this.isDragProgressAnchor;
+    if (this.isDragProgressAnchor && event.type === 'mouseout') {
+      this.isDragProgressAnchor = false;
       this.percent = this.achorPercent;
       if (this.player) {
         this.player.currentTime = (this.percent / 100) * this.duration;
@@ -299,7 +294,8 @@ export class NgCanvasVideoComponent
   onProcessAreaMouseMove(event: any): void {
     if (this.isDragProgressAnchor) {
       const rect = event.target.parentElement.getBoundingClientRect();
-      this.achorPercent = ((event.x - rect.x) / rect.width) * 100;
+      const percent = ((event.x - rect.x) / rect.width) * 100;
+      this.achorPercent = percent > 100 ? 100 : percent < 0 ? 0 : percent;
     }
   }
 
