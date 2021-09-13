@@ -282,7 +282,7 @@ export class NgCanvasVideoComponent
   }
 
   onProgressAchorDragEnd(event: any): void {
-    if (this.isDragProgressAnchor && event.type === 'mouseout') {
+    if (this.isDragProgressAnchor) {
       this.isDragProgressAnchor = false;
       this.percent = this.achorPercent;
       if (this.player) {
