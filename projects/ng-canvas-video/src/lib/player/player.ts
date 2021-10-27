@@ -269,7 +269,7 @@ export class Player {
       if (this.video$.src) {
         URL.revokeObjectURL(this.video$.src);
       }
-      if (this.recorder$.status === 'recording') {
+      if (this.recorder$?.status === 'recording') {
         this.stopRecord();
       }
       this.removeVideoElement(this.video$);
@@ -280,7 +280,7 @@ export class Player {
 
   createVideoElement(): HTMLVideoElement {
     const video = document.createElement('video');
-    video.style.display = 'none';
+    // video.style.display = 'none';
     // document.body.appendChild(video);
     return video;
   }

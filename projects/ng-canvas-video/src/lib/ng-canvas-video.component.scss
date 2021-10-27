@@ -79,7 +79,7 @@
       text-align: center;
       .iconfont {
         font-size: 2rem;
-        &.icon-loading1 {
+        &.icon-loading {
           animation: rotate linear 1s infinite;
         }
       }
@@ -184,7 +184,7 @@
                 position: absolute;
                 display: none;
                 // top: -120px;
-                top: -150px;
+                top: -120px;
                 left: 50%;
                 transform: translateX(-50%);
                 padding: 10px 5px;
@@ -196,7 +196,8 @@
                 input[type="range"] {
                   display: flex;
                   justify-content: center;
-                  height: 130px;
+                  height: 100px;
+                  width: 100px;
                   transform: rotate(-90deg);
                   // height: 100px;
                   // appearance: slider-vertical;
@@ -237,7 +238,7 @@
         bottom: 65px;
       }
     }
-    
+
     &.loading.control-inside {
       .video-mask {
         bottom: 0;

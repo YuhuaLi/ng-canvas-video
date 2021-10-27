@@ -36,6 +36,8 @@ export class AppComponent {
       },
     },
   };
+  // src1 = 'webrtc://10.169.88.199/live/abc';
+  src1 = 'webrtc://10.169.42.189/live/agkjdhfglskdfjgsldergj/123-48547M++1++192.168.10.23++akfafgshsKJGKLGIU7JKGHKJG';
   validDateArr = [
     { start: new Date('2021-09-07 02:31'), end: new Date('2021-09-07 03:41') },
     { start: new Date('2021-09-07 10:31'), end: new Date('2021-09-07 12:41') },

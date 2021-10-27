@@ -192,6 +192,46 @@
           }
         }
       }
+    },
+    "ng-week-timerange": {
+      "projectType": "library",
+      "root": "projects/ng-week-timerange",
+      "sourceRoot": "projects/ng-week-timerange/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/ng-week-timerange/tsconfig.lib.json",
+            "project": "projects/ng-week-timerange/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng-week-timerange/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ng-week-timerange/src/test.ts",
+            "tsConfig": "projects/ng-week-timerange/tsconfig.spec.json",
+            "karmaConfig": "projects/ng-week-timerange/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ng-week-timerange/tsconfig.lib.json",
+              "projects/ng-week-timerange/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ng-canvas-video-app"

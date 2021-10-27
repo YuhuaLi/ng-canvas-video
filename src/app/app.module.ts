@@ -3,10 +3,11 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-// import { NgCanvasVideoModule } from 'projects/ng-canvas-video/src/lib/ng-canvas-video.module';
-// import { NgTimeSliderModule } from 'projects/ng-time-slider/src/public-api';
-import { NgCanvasVideoModule } from 'ng-canvas-video';
-import { NgTimeSliderModule } from 'ng-time-slider';
+import { NgCanvasVideoModule } from 'projects/ng-canvas-video/src/lib/ng-canvas-video.module';
+import { NgTimeSliderModule } from 'projects/ng-time-slider/src/public-api';
+import { NgWeekTimerangeModule } from 'projects/ng-week-timerange/src/public-api';
+// import { NgCanvasVideoModule } from 'ng-canvas-video';
+// import { NgTimeSliderModule } from 'ng-time-slider';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,6 +16,7 @@ import { NgTimeSliderModule } from 'ng-time-slider';
     AppRoutingModule,
     NgCanvasVideoModule,
     NgTimeSliderModule,
+    NgWeekTimerangeModule
   ],
   providers: [],
   bootstrap: [AppComponent],

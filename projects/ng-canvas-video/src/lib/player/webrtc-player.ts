@@ -10,6 +10,10 @@ export class WebRtcPlayer extends Player {
 
   setSource(src: VideoSource): void {
     if (this.video$) {
+      this.registerVideoEvent(this.video$);
+      if (this.video$.srcObject) {
+        this.video$.srcObject = null;
+      }
       if (isString(src)) {
         // this.video$.src = this.srcUrl;
         this.getMediaStream(src as string).catch(

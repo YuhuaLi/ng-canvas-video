@@ -27,6 +27,10 @@
       "ng-time-slider": [
         "dist/ng-time-slider/ng-time-slider",
         "dist/ng-time-slider"
+      ],
+      "ng-week-timerange": [
+        "dist/ng-week-timerange/ng-week-timerange",
+        "dist/ng-week-timerange"
       ]
     }
   },
