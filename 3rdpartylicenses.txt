@@ -38,6 +38,8 @@ ng-canvas-video
 
 ng-time-slider
 
+ng-week-timerange
+
 rxjs
 Apache-2.0
                                Apache License
