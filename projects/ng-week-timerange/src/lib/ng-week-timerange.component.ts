@@ -244,7 +244,7 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
           this.backCtx.fillRect(
             0,
             this.headerHeight + idx * this.heightUnit,
-            this.backCanvas.width,
+            this.backCanvas.width - this.actionWidth,
             this.heightUnit
           );
         } else {
@@ -260,27 +260,8 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
         // this.timeRange[this.activeRange.week].push(this.activeRange);
       } else if (this.status === Status.MoveRange && this.selectedRange) {
         let start = x - this.pointOffsetLeft;
-        let end =
-          x -
-          this.pointOffsetLeft +
-          this.selectedRange.end -
-          this.selectedRange.start;
-        // if (start <= this.weekNameWidth) {
-        //   start = this.weekNameWidth;
-        //   end = start + this.selectedRange.end - this.selectedRange.start;
-        // } else if (end >= this.canvas.width - this.actionWidth) {
-        //   end = this.canvas.width - this.actionWidth;
-        //   start = end - this.selectedRange.end + this.selectedRange.start;
-        // }
-        let pre = start;
-        start = this.calcSetBound(this.selectedRange, start);
-        if (pre === start) {
-          pre = end;
-          end = this.calcSetBound(this.selectedRange, end);
-          start = end - this.selectedRange.end + this.selectedRange.start;
-        } else {
-          end = start + this.selectedRange.end - this.selectedRange.start;
-        }
+        start = this.calcMoveStartBound(this.selectedRange, start);
+        const end = start + this.selectedRange.end - this.selectedRange.start;
         this.clearSelectedRange();
         this.selectedRange.start = start;
         this.selectedRange.end = end;
@@ -329,6 +310,7 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
           } else if (isRightResize) {
             this.canvas.style.cursor = `e-resize`;
           }
+          this.cdr.detectChanges();
         }
       }
     });
@@ -336,19 +318,38 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
 
   onMouseOver(event: MouseEvent): void {}
 
-  onMouseOut(event: MouseEvent): void {
-    if (this.rafId) {
-      window.cancelAnimationFrame(this.rafId);
-      this.renderring = false;
-    }
-    this.backCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.preMovePoint = undefined;
-    this.pointOffsetLeft = 0;
-    this.status = Status.None;
-    this.activeRange = undefined;
+  onMouseOut(event: any): void {
+    this.onMouseUp(event);
+    // if (this.mousedownTimeoutId) {
+    //     clearTimeout(this.mousedownTimeoutId);
+    //     this.mousedownTimeoutId = null;
+    // }
+    // if (this.rafId) {
+    //     window.cancelAnimationFrame(this.rafId);
+    //     this.renderring = false;
+    //     this.rafId = null;
+    // }
+    // if (this.status === Status.SetRange && this.activeRange) {
+    //     this.modalPlaceholder.clear();
+    //     this.timeRef = null;
+    //     this.showTimeDetail(this.activeRange);
+    // } else if (this.status === Status.ResizeRange || (this.status === Status.MoveRange && this.selectedRange)) {
+    //     this.modalPlaceholder.clear();
+    //     this.timeRef = null;
+    //     this.showTimeDetail(this.selectedRange);
+    // }
+    // this.backCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // this.preMovePoint = undefined;
+    // this.pointOffsetLeft = 0;
+    // this.status = Status.None;
+    // this.activeRange = undefined;
   }
 
   onMouseDown(event: MouseEvent): void {
+    // if (this.currentCopy !== null) {
+    //   this.currentCopy = null;
+    // }
+    // this.closeTimeDetail();
     (event.target as any).focus();
     const x = event.offsetX;
     const y = event.offsetY;
@@ -359,6 +360,8 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
         this.setSelectedRange(range);
       }
       this.status = Status.SelectRange;
+    } else {
+      this.setSelectedRange();
     }
     this.mousedownTimeoutId = setTimeout(() => {
       if (range) {
@@ -393,16 +396,20 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
           this.setSelectedRange();
         }
       }
-    }, 100);
+    }, 150);
   }
 
   onMouseUp(event: MouseEvent): void {
-    console.log(event);
     const x = event.offsetX;
     const y = event.offsetY;
     if (this.mousedownTimeoutId) {
       clearTimeout(this.mousedownTimeoutId);
       this.mousedownTimeoutId = null;
+    }
+    if (this.rafId) {
+      window.cancelAnimationFrame(this.rafId);
+      this.renderring = false;
+      this.rafId = null;
     }
     if (this.status === Status.SetRange && this.activeRange) {
       if (this.activeRange.start > this.activeRange.end) {
@@ -431,20 +438,38 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
         // this.selectedRange = this.activeRange;
         // this.drawSelectedRange();
         this.setSelectedRange(this.activeRange);
-      } else {
-        this.clearSelectedRange();
-        this.selectedRange = undefined;
+        // this.showTimeDetail(this.selectedRange);
       }
       this.activeRange = undefined;
-    } else if (
+    } else if (this.status === Status.ResizeRange && this.selectedRange) {
+      if (this.selectedRange.start === this.selectedRange.end) {
+        this.deleteRange(this.selectedRange);
+      }
+    }
+    if (
       (this.status === Status.SelectRange ||
+        this.status === Status.ResizeRange ||
         (this.status === Status.MoveRange &&
           this.preMovePoint &&
           this.preMovePoint.x === x &&
           this.preMovePoint.y === y)) &&
       this.selectedRange
     ) {
+      // this.showTimeDetail(this.selectedRange);
     }
+
+    if (!this.selectedRange) {
+      // this.closeTimeDetail();
+    }
+
+    if (
+      this.status === Status.ResizeRange ||
+      this.status === Status.MoveRange ||
+      this.status === Status.SetRange
+    ) {
+      // this.emit();
+    }
+
     this.preMovePoint = undefined;
     this.pointOffsetLeft = 0;
     this.status = Status.None;
@@ -629,31 +654,57 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
     );
   }
 
+  calcMoveStartBound(range: Range, x: number): number {
+    const weekRanges = this.timeRange[range.week];
+    const index = weekRanges.findIndex(item => item === range);
+    const width = range.end - range.start;
+    if (index === 0) {
+        if (x < this.weekNameWidth) {
+            x = this.weekNameWidth;
+        } else if (weekRanges[1] && x > weekRanges[1].start - width) {
+            x = weekRanges[1].start - width;
+        } else if (x > this.canvas.width - this.actionWidth - width) {
+            x = this.canvas.width - this.actionWidth - width;
+        }
+    } else if (index === weekRanges.length - 1) {
+        if (x < weekRanges[index - 1].end) {
+            x = weekRanges[index - 1].end;
+        } else if (x > this.canvas.width - this.actionWidth - width) {
+            x = this.canvas.width - this.actionWidth - width;
+        }
+    } else {
+        if (x < weekRanges[index - 1].end) {
+            x = weekRanges[index - 1].end;
+        } else if (x > weekRanges[index + 1].start - width) {
+            x = weekRanges[index + 1].start - width;
+        }
+    }
+    return x;
+}
+
   calcResizeBound(range: Range, x: number): number {
     const weekRanges = this.timeRange[range.week];
-    const [min, max] = [
-      Math.min(range.start, range.end),
-      Math.max(range.start, range.end),
-    ];
-    if (x > max) {
-      let bound = this.canvas.width - this.actionWidth;
-      for (const weekRange of weekRanges) {
-        if (weekRange.start <= x && weekRange.start >= max) {
-          bound = weekRange.start;
-          break;
-        }
+    const index = weekRanges.findIndex((item) => item === range);
+    if (index === 0) {
+      if (x < this.weekNameWidth) {
+        x = this.weekNameWidth;
+      } else if (weekRanges[1] && x > weekRanges[1].start) {
+        x = weekRanges[1].start;
+      } else if (x > this.canvas.width - this.actionWidth) {
+        x = this.canvas.width - this.actionWidth;
       }
-      return x < bound ? x : bound;
-    } else if (x < min) {
-      let bound = this.weekNameWidth;
-      for (const weekRange of weekRanges) {
-        if (weekRange.end >= x && weekRange.end <= range.start) {
-          bound = weekRange.end > bound ? weekRange.end : bound;
-        } else if (weekRange.start >= range.start) {
-          break;
-        }
+    } else if (index === weekRanges.length - 1) {
+      if (x < weekRanges[index - 1].end) {
+        x = weekRanges[index - 1].end;
+      } else if (x > this.canvas.width - this.actionWidth) {
+        x = this.canvas.width - this.actionWidth;
       }
-      return x > bound ? x : bound;
+    } else {
+      if (x < weekRanges[index - 1].end) {
+        x = weekRanges[index - 1].end;
+      } else if (x > weekRanges[index + 1].start) {
+        x = weekRanges[index + 1].start;
+      }
     }
 
     return x;
@@ -661,6 +712,7 @@ export class NgWeekTimerangeComponent implements OnInit, AfterViewInit {
 
   calcSetBound(range: Range, x: number): number {
     const weekRanges = this.timeRange[range.week];
+
     if (x > range.start) {
       let bound = this.canvas.width - this.actionWidth;
       for (const weekRange of weekRanges) {
